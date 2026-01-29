@@ -1,0 +1,1 @@
+# blox-fruits-stock-widget
