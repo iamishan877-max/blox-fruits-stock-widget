@@ -1,47 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Blox Fruits Stock</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Blox Fruits Stock</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Open Sans, sans-serif;
-      background: transparent;
-    }
+<style>
+  body {
+    margin: 0;
+    background: transparent;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 16px;
+  }
 
+  #blox-stock {
+    width: 100%;
+    max-width: 360px;
+    background: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 14px;
+    box-sizing: border-box;
+  }
+
+  /* Tabs */
+  .stock-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .stock-tabs button {
+    flex: 1;
+    padding: 6px 0;
+    font-size: 13px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .stock-tabs button.active {
+    font-weight: 600;
+    background: #eaeaea;
+  }
+
+  /* Timer */
+  #stock-timer {
+    font-size: 13px;
+    margin-bottom: 12px;
+    color: #222;
+  }
+
+  /* List */
+  #stock-list {
+    list-style: disc;
+    padding-left: 18px;
+    margin: 0;
+  }
+
+  #stock-list li {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 420px) {
     #blox-stock {
-      border: 1px solid #ddd;
-      padding: 16px;
-      max-width: 420px;
-      background: #fff;
+      max-width: 100%;
     }
-
-    .stock-tabs {
-      margin-bottom: 10px;
-    }
-
-    .stock-tabs button {
-      margin-right: 8px;
-      padding: 6px 14px;
-      cursor: pointer;
-    }
-
-    .stock-tabs .active {
-      font-weight: bold;
-    }
-
-    #stock-timer {
-      margin: 8px 0;
-    }
-
-    #stock-list {
-      margin-top: 10px;
-      padding-left: 20px;
-    }
-  </style>
+  }
+</style>
 </head>
 
 <body>
@@ -52,7 +83,7 @@
     <button id="tab-mirage">Mirage</button>
   </div>
 
-  <div id="stock-timer">Loading...</div>
+  <div id="stock-timer">Loading…</div>
   <ul id="stock-list"></ul>
 </div>
 
@@ -95,6 +126,7 @@ function cleanFruitName(name) {
 
 function render() {
   if (!stockData) return;
+
   const list = document.getElementById("stock-list");
   list.innerHTML = "";
 
