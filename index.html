@@ -12,34 +12,34 @@
     font-family: system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
     display: flex;
     justify-content: center;
-    padding: 16px;
+    padding: 24px;
   }
 
   #blox-stock {
     width: 100%;
-    max-width: 360px;
+    max-width: 480px;
     background: #ffffff;
     border: 1px solid #ddd;
-    border-radius: 10px;
-    padding: 14px;
+    border-radius: 14px;
+    padding: 20px;
     box-sizing: border-box;
   }
 
   /* Tabs */
   .stock-tabs {
     display: flex;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 10px;
+    margin-bottom: 16px;
   }
 
   .stock-tabs button {
     flex: 1;
-    padding: 6px 0;
-    font-size: 13px;
+    padding: 10px 0;
+    font-size: 16px;
     border: 1px solid #ccc;
     background: #f7f7f7;
     cursor: pointer;
-    border-radius: 6px;
+    border-radius: 8px;
   }
 
   .stock-tabs button.active {
@@ -49,27 +49,37 @@
 
   /* Timer */
   #stock-timer {
-    font-size: 13px;
-    margin-bottom: 12px;
+    font-size: 15px;
+    margin-bottom: 16px;
     color: #222;
+    text-align: center;
   }
 
   /* List */
   #stock-list {
     list-style: disc;
-    padding-left: 18px;
+    padding-left: 22px;
     margin: 0;
   }
 
   #stock-list li {
-    font-size: 13px;
-    line-height: 1.5;
-    margin-bottom: 4px;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 6px;
   }
 
-  @media (max-width: 420px) {
+  @media (max-width: 480px) {
     #blox-stock {
       max-width: 100%;
+      padding: 18px;
+    }
+
+    .stock-tabs button {
+      font-size: 15px;
+    }
+
+    #stock-list li {
+      font-size: 15px;
     }
   }
 </style>
@@ -112,63 +122,4 @@ function getNextReset(type) {
     0, 0, 0
   );
 
-  return Math.max(0, Math.floor((reset - now) / 1000));
-}
-
-function cleanFruitName(name) {
-  if (!name.includes("-")) return name;
-  const parts = name.split("-");
-  if (parts.length === 2 && parts[0].toLowerCase() === parts[1].toLowerCase()) {
-    return parts[0];
-  }
-  return name;
-}
-
-function render() {
-  if (!stockData) return;
-
-  const list = document.getElementById("stock-list");
-  list.innerHTML = "";
-
-  stockData[currentTab].forEach(fruit => {
-    const li = document.createElement("li");
-    li.textContent = cleanFruitName(fruit.name) + " – " + fruit.price;
-    list.appendChild(li);
-  });
-
-  document.getElementById("tab-normal").classList.toggle("active", currentTab === "normal");
-  document.getElementById("tab-mirage").classList.toggle("active", currentTab === "mirage");
-}
-
-function updateTimer() {
-  const seconds = getNextReset(currentTab);
-  document.getElementById("stock-timer").textContent =
-    "Next " + currentTab + " stock refresh in " + formatTime(seconds);
-}
-
-async function loadStock() {
-  const res = await fetch(DATA_URL + "?t=" + Date.now());
-  stockData = await res.json();
-  render();
-}
-
-document.getElementById("tab-normal").onclick = () => {
-  currentTab = "normal";
-  render();
-  updateTimer();
-};
-
-document.getElementById("tab-mirage").onclick = () => {
-  currentTab = "mirage";
-  render();
-  updateTimer();
-};
-
-loadStock();
-updateTimer();
-setInterval(updateTimer, 1000);
-setInterval(loadStock, 60000);
-</script>
-
-</body>
-</html>
+  return Math.max(0, Math.floor((res
