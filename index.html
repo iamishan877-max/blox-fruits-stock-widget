@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Blox Fruits Stock</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: transparent;
+    }
+
+    #blox-stock {
+      border: 1px solid #ddd;
+      padding: 16px;
+      max-width: 420px;
+      background: #fff;
+    }
+
+    .stock-tabs {
+      margin-bottom: 10px;
+    }
+
+    .stock-tabs button {
+      margin-right: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+    }
+
+    .stock-tabs .active {
+      font-weight: bold;
+    }
+
+    #stock-timer {
+      margin: 8px 0;
+    }
+
+    #stock-list {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="blox-stock">
+  <div class="stock-tabs">
+    <button id="tab-normal" class="active">Normal</button>
+    <button id="tab-mirage">Mirage</button>
+  </div>
+
+  <div id="stock-timer">Loading...</div>
+  <ul id="stock-list"></ul>
+</div>
+
+<script>
+const DATA_URL = "https://raw.githubusercontent.com/iamishan877-max/Blox-Fruits-Stock/main/data/stock.json";
+
+let stockData = null;
+let currentTab = "normal";
+
+function formatTime(seconds) {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  return (h ? h + ":" : "") +
+    String(m).padStart(2, "0") + ":" +
+    String(s).padStart(2, "0");
+}
+
+function getNextReset(type) {
+  const now = new Date();
+  const reset = new Date(now);
+  const hours = type === "normal" ? 4 : 2;
+
+  reset.setUTCHours(
+    Math.floor(now.getUTCHours() / hours) * hours + hours,
+    0, 0, 0
+  );
+
+  return Math.max(0, Math.floor((reset - now) / 1000));
+}
+
+function cleanFruitName(name) {
+  if (!name.includes("-")) return name;
+  const parts = name.split("-");
+  if (parts.length === 2 && parts[0].toLowerCase() === parts[1].toLowerCase()) {
+    return parts[0];
+  }
+  return name;
+}
+
+function render() {
+  if (!stockData) return;
+  const list = document.getElementById("stock-list");
+  list.innerHTML = "";
+
+  stockData[currentTab].forEach(fruit => {
+    const li = document.createElement("li");
+    li.textContent = cleanFruitName(fruit.name) + " – " + fruit.price;
+    list.appendChild(li);
+  });
+
+  document.getElementById("tab-normal").classList.toggle("active", currentTab === "normal");
+  document.getElementById("tab-mirage").classList.toggle("active", currentTab === "mirage");
+}
+
+function updateTimer() {
+  const seconds = getNextReset(currentTab);
+  document.getElementById("stock-timer").textContent =
+    "Next " + currentTab + " stock refresh in " + formatTime(seconds);
+}
+
+async function loadStock() {
+  const res = await fetch(DATA_URL + "?t=" + Date.now());
+  stockData = await res.json();
+  render();
+}
+
+document.getElementById("tab-normal").onclick = () => {
+  currentTab = "normal";
+  render();
+  updateTimer();
+};
+
+document.getElementById("tab-mirage").onclick = () => {
+  currentTab = "mirage";
+  render();
+  updateTimer();
+};
+
+loadStock();
+updateTimer();
+setInterval(updateTimer, 1000);
+setInterval(loadStock, 60000);
+</script>
+
+</body>
+</html>
